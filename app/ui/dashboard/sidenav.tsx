@@ -2,35 +2,32 @@ import Link from 'next/link';
 import NavLinks from '@/app/ui/dashboard/nav-links';
 import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon } from '@heroicons/react/24/outline';
-import styles from './side-nav.module.scss'; 
+// A linha de import do styles foi deletada!
 import { signOut } from '@/auth';
-
 
 export default function SideNav() {
   return (
-    <div className={styles.container}>
-      <Link className={styles.logoWrapper} href="/">
-        <div className={styles.logoContent}>
+    <div className="sidenav-container">
+      <Link className="sidenav-logo-wrapper" href="/">
+        <div className="sidenav-logo-content">
           <AcmeLogo />
         </div>
       </Link>
-      <div className={styles.navWrapper}>
+      <div className="sidenav-nav-wrapper">
         <NavLinks />
-        <div className={styles.spacer}></div>
+        <div className="sidenav-spacer"></div>
         <form
           action={async () => {
             'use server';
             await signOut({ redirectTo: '/' });
           }}
         >
-          <button className={styles.signOutButton}>
+          <button className="sidenav-signout-btn">
             <PowerIcon className="w-6" />
-            <div className={styles.signOutText}>Sign Out</div>
+            <div className="sidenav-signout-text">Sign Out</div>
           </button>
         </form>
       </div>
     </div>
   );
 }
-
-

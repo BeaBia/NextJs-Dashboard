@@ -5,9 +5,10 @@ import {
   HomeIcon,
   DocumentDuplicateIcon,
 } from '@heroicons/react/24/outline';
+
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-//import  clsx from 'clsx';
+import clsx from 'clsx';
 import styles from './nav-link.module.scss';
 
 
@@ -34,7 +35,9 @@ export default function NavLinks() {
           <Link
             key={link.name}
             href={link.href}
-            className={`${styles.link} ${isActive ? styles.active : ''}`}        >
+            // Usamos apenas as strings das classes que estão lá no global.scss
+            className={`nav-link ${isActive ? 'active' : ''}`}
+          >
             <LinkIcon className="w-6" />
             <p className="hidden md:block">{link.name}</p>
           </Link>
@@ -43,4 +46,3 @@ export default function NavLinks() {
     </>
   );
 }
-
