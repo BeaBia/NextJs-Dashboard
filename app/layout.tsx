@@ -1,7 +1,6 @@
-import '@/app/ui/styles/global.scss';
+import '@/app/ui/global.css';
 import { inter } from '@/app/ui/fonts';
 import { Metadata } from 'next';
-import Providers from '@/app/providers';
  
 export const metadata: Metadata = {
   title: {
@@ -12,7 +11,6 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://next-learn-dashboard.vercel.sh'),
 };
 
-
 export default function RootLayout({
   children,
 }: {
@@ -20,13 +18,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      {/* Envolva o children com o componente Providers */}
-      <body className={`${inter.className} antialiased`}>
-        <Providers>
-          {children}
-        </Providers>
-      </body>
+
+      <body className={`${inter.className} antialiased`}>{children}</body>
+
     </html>
   );
 }
-
