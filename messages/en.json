@@ -1,0 +1,14 @@
+{
+  "InvoiceForm": {
+    "title": "Create Invoice",
+    "customerLabel": "Choose customer",
+    "customerPlaceholder": "Select a customer",
+    "amountLabel": "Choose an amount",
+    "amountPlaceholder": "Enter USD amount",
+    "statusLabel": "Set the invoice status",
+    "statusPending": "Pending",
+    "statusPaid": "Paid",
+    "cancelButton": "Cancel",
+    "submitButton": "Create Invoice"
+  }
+}

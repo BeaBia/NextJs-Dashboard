@@ -1,0 +1,14 @@
+{
+  "InvoiceForm": {
+    "title": "Criar Fatura",
+    "customerLabel": "Escolha o cliente",
+    "customerPlaceholder": "Selecione um cliente",
+    "amountLabel": "Escolha um valor",
+    "amountPlaceholder": "Insira o valor em USD",
+    "statusLabel": "Defina o status da fatura",
+    "statusPending": "Pendente",
+    "statusPaid": "Pago",
+    "cancelButton": "Cancelar",
+    "submitButton": "Criar Fatura"
+  }
+}

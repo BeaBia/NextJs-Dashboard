@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 import postgres from 'postgres';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import { success } from 'zod/v4';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
  
@@ -35,20 +36,14 @@ export type State = {
   message?: string | null;
 };
  
-export async function createInvoice(prevState: State, formData: FormData) {
+export async function createInvoice(data: z.infer<typeof CreateInvoice>) {
   // Validate form fields using Zod
-    const validatedFields = CreateInvoice.safeParse({
-        customerId: formData.get('customerId'),
-        amount: formData.get('amount'),
-        status: formData.get('status'),
-    });
+    const validatedFields = CreateInvoice.safeParse(data);
     
     // If form validation fails, return errors early. Otherwise, continue.
+  // Se falhar a segurança, explodimos um erro! O TanStack Query vai pegar isso.
     if (!validatedFields.success) {
-      return {
-        errors: validatedFields.error.flatten().fieldErrors,
-        message: 'Missing Fields. Failed to Create Invoice.',
-      };
+      throw new Error('Invalid or missing fields. Failed to Create Invoice.');
     }
     
     // Prepare data for insertion into the database
@@ -66,16 +61,13 @@ export async function createInvoice(prevState: State, formData: FormData) {
       `;
 
     }catch (error) {
-      // If a database error occurs, return a more specific error.
-      return{
-        message: 'Database Error: Failed to Create Invoice.',
-      };
+      throw new Error('Database Error: Failed to Create Invoice.');
 
     }
     
     //revalidate the cache for the invoices page and redirect the user
     revalidatePath('/dashboard/invoices');
-    redirect('/dashboard/invoices');
+    return {success: true}
 }
 
 export async function updateInvoice(
