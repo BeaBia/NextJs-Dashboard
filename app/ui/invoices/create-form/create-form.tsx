@@ -9,7 +9,6 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createInvoice, State } from '@/app/lib/actions';
 import { useActionState } from 'react';
 import styles from './create-form.module.scss';
 
@@ -22,6 +21,11 @@ import { useRouter } from 'next/navigation';
 import { register } from 'next/dist/next-devtools/userspace/pages/pages-dev-overlay-setup';
 import { error } from 'next/dist/build/output/log';
 import { ErrorSource } from 'next/dist/server/web/sandbox';
+import { useTranslations } from 'next-intl'; // Import normal, sem o /server
+
+//IMPORT COM SERVICES COM AXIOS
+import axios from 'axios';
+import { useState } from 'react'; 
 
 
 const InvoiceSchema = z.object({
@@ -49,10 +53,12 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
   const mutation = useMutation({
     mutationFn: async (data: InvoiceFormData) => {
       //Chama a Server Action do arquivo actions.ts
-      await createInvoice(data);
+      const response = await axios.post('/api/invoice', data);
+      return response.data;
     }, 
     onSuccess: () => {
-      //Redireciona para a lista de invoices após sucesso
+      router.refresh(); //antes tinha o revalidatePath em action como server actions, 
+      //agr n tem mais. é uma API REST isolada
       router.push('/dashboard/invoices');
     },
 
@@ -62,12 +68,14 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
     mutation.mutate(data);
   };
 
+  const t = useTranslations('InvoiceForm');
+
   
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.formContainer}>
       <div className={styles.inputGroup}>
-        <label htmlFor="customer" className={styles.label}>Choose customer</label>
+        <label htmlFor="customer" className={styles.label}>{t('customerLabel')}</label>
         <div className={styles.inputWrapper}>
           <select
             id="customer"
@@ -76,7 +84,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
             defaultValue=""
             aria-describedby="customer-error"
           >
-            <option value="" disabled>Select a customer</option>
+            <option value="" disabled>{t('customerPlaceholder')}</option>
             {customers?.map((customer) => (
               <option key={customer.id} value={customer.id}>
                 {customer.name}
@@ -95,7 +103,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
       {/* Invoice Amount */}
 
       <div className={styles.inputGroup}>
-        <label htmlFor="amount" className={styles.label}>Choose an amount</label>
+        <label htmlFor="amount" className={styles.label}>{t('amountLabel')}</label>
         <div className={styles.inputWrapper}>
           <input
             id="amount"
@@ -115,7 +123,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
 
       {/* Invoice Status */}
       <fieldset>
-        <legend className={styles.label}>Set the invoice status</legend>
+        <legend className={styles.label}>{t('statusLabel')}</legend>
         <div className={styles.statusContainer}>
           <div className="flex items-center">
             <input
@@ -127,7 +135,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
               aria-describedby="status-error"
             />
             <label htmlFor="pending" className={`${styles.radioLabel} ${styles.radioPending}`}>
-              Pending <ClockIcon className="h-4 w-4" />
+              {t('statusPending')} <ClockIcon className="h-4 w-4" />
             </label>
           </div>
           <div className="flex items-center">
@@ -139,7 +147,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
               className="h-4 w-4 cursor-pointer"
             />
             <label htmlFor="paid" className={`${styles.radioLabel} ${styles.radioPaid}`}>
-              Paid <CheckIcon className="h-4 w-4" />
+              {t('statusPaid')} <CheckIcon className="h-4 w-4" />
             </label>
           </div>
         </div>
@@ -153,14 +161,15 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
       <div id="form-error" aria-live="polite" aria-atomic="true">
         {mutation.isError && (
           <p className={styles.errorMessage}>
-            {mutation.error?.message || 'Failed to create invoice. Please try again.'}
-          </p>
+              {axios.isAxiosError(mutation.error) 
+              ? mutation.error.response?.data?.message || 'Erro de comunicação com o servidor.' 
+              : 'Failed to create invoice. Please try again.'}          </p>
         )}
       </div>
       
       <div className={styles.buttonGroup}>
         <Link href="/dashboard/invoices" className={`${styles.btn} ${styles.btnCancel}`}>
-          Cancel
+         {t('cancelButton')}
         </Link>
 
         <Button 
@@ -168,7 +177,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
         className={styles.btnSubmit}
         disabled={mutation.isPending}
         >
-          {mutation.isPending? 'Creating...': 'Create Invoice'}
+          {mutation.isPending? 'Creating...': t('submitButton')}
         </Button>
       </div>
     </form>

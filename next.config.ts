@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin'; // 1. Importa o plugin
 
-const withNextIntl = createNextIntlPlugin(); // 2. Inicializa o plugin
+const withNextIntl = createNextIntlPlugin('./i18n.ts');
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -9,3 +9,4 @@ const nextConfig: NextConfig = {
 
 // 3. Envolve a sua configuração atual com o plugin
 export default withNextIntl(nextConfig);
+

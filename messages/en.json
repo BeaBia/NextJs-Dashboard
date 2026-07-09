@@ -9,6 +9,8 @@
     "statusPending": "Pending",
     "statusPaid": "Paid",
     "cancelButton": "Cancel",
-    "submitButton": "Create Invoice"
+    "submitButton": "Create Invoice",
+    "breadcrumbsInvoices": "Invoices",
+    "breadcrumbsCreate": "Create Invoice"
   }
 }

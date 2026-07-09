@@ -24,7 +24,6 @@ const FormSchema = z.object({
   date: z.string(),
 });
  
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
 export type State = {
@@ -36,39 +35,7 @@ export type State = {
   message?: string | null;
 };
  
-export async function createInvoice(data: z.infer<typeof CreateInvoice>) {
-  // Validate form fields using Zod
-    const validatedFields = CreateInvoice.safeParse(data);
-    
-    // If form validation fails, return errors early. Otherwise, continue.
-  // Se falhar a segurança, explodimos um erro! O TanStack Query vai pegar isso.
-    if (!validatedFields.success) {
-      throw new Error('Invalid or missing fields. Failed to Create Invoice.');
-    }
-    
-    // Prepare data for insertion into the database
 
-    const {customerId, amount, status} = validatedFields.data;
-    const amountInCents = amount * 100;
-    const date = new Date().toISOString().split('T')[0];
-
-    //Insert data into the database
-    try{
-      await sql`
-        INSERT INTO invoices (customer_id, amount, status, date)
-        VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
-
-      `;
-
-    }catch (error) {
-      throw new Error('Database Error: Failed to Create Invoice.');
-
-    }
-    
-    //revalidate the cache for the invoices page and redirect the user
-    revalidatePath('/dashboard/invoices');
-    return {success: true}
-}
 
 export async function updateInvoice(
   id: string,

@@ -9,6 +9,8 @@
     "statusPending": "Pendente",
     "statusPaid": "Pago",
     "cancelButton": "Cancelar",
-    "submitButton": "Criar Fatura"
+    "submitButton": "Criar Fatura",
+    "breadcrumbsInvoices": "Fatura",
+    "breadcrumbsCreate": "Criar Fatura"
   }
 }
